@@ -31,7 +31,7 @@ const CardItemTransactionList = ({
               {senderBank ? senderBank : null}
             </Text>
             <Text style={styles.textBeneficiaryBank}>
-              {beneficiaryBank ? ' -> ' + beneficiaryBank : null}
+              {beneficiaryBank ? ' → ' + beneficiaryBank : null}
             </Text>
           </View>
           <Text style={styles.textBeneficiaryName}>
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
   },
   textSenderBank: {
     fontSize: 16,
-    fontWeight: '800',
+    fontWeight: '700',
     lineHeight: 24,
     letterSpacing: 0.15,
     color: '#000000',
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   },
   textBeneficiaryBank: {
     fontSize: 16,
-    fontWeight: '800',
+    fontWeight: '700',
     lineHeight: 24,
     letterSpacing: 0.15,
     color: '#000000',

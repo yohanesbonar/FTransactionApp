@@ -7,12 +7,25 @@ import {getTransactionList} from '../../components/utils/network/transaction';
 
 const TransactionList = ({navigation}) => {
   const [dataTransaction, setDataTransaction] = useState({});
+  const [isRefreshData, setIsRefreshData] = useState(false);
 
   useEffect(() => {
-    initData();
+    getData();
   }, []);
 
-  const initData = async () => {
+  useEffect(() => {
+    if (isRefreshData) {
+      setIsRefreshData(false);
+      getData();
+    }
+  }, [isRefreshData]);
+
+  const onRefresh = () => {
+    setDataTransaction({});
+    setIsRefreshData(true);
+  };
+
+  const getData = async () => {
     try {
       let response = await getTransactionList();
       if (response) {
@@ -61,11 +74,15 @@ const TransactionList = ({navigation}) => {
   return (
     <NativeBaseProvider>
       <HeaderToolbar title={'Transaction List'} />
-      <FlatList
-        style={styles.flatlistStyleContainer}
-        data={Object.keys(dataTransaction)}
-        renderItem={({item}) => renderData(item)}
-      />
+      <View style={styles.mainContainer}>
+        <FlatList
+          onRefresh={onRefresh}
+          style={styles.flatlistStyleContainer}
+          data={Object.keys(dataTransaction)}
+          renderItem={({item}) => renderData(item)}
+          refreshing={false}
+        />
+      </View>
     </NativeBaseProvider>
   );
 };
@@ -77,5 +94,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingTop: 10,
     paddingBottom: 60,
+  },
+  mainContainer: {
+    backgroundColor: '#f4faf8',
+    flex: 1,
+    paddingBottom: 20,
   },
 });
