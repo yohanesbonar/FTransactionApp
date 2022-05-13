@@ -1,20 +1,25 @@
-import React from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
-import HeaderToolbar from './app/components/molecules/HeaderToolbar';
+import * as React from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {DetailTransaction, TransactionList} from './app/screens';
+const Stack = createNativeStackNavigator();
 
-const App = ({navigation}) => {
+const App = () => {
   return (
-    <View>
-      <HeaderToolbar title={'Transaction List'} />
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen
+          name="TransactionList"
+          component={TransactionList}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="DetailTransaction"
+          component={DetailTransaction}
+          options={{headerShown: false}}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 };
 
