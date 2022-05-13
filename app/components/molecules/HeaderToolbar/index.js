@@ -1,8 +1,12 @@
+import { ArrowBackIcon } from 'native-base';
 import React from 'react';
-import {SafeAreaView, TouchableOpacity} from 'react-native';
-import {StyleSheet, Text, View} from 'react-native';
-import {Body, Header, Right, Title, Icon, ArrowBackIcon} from 'native-base';
-import _ from 'lodash';
+import {
+  SafeAreaView,
+  TouchableOpacity,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 
 const HeaderToolbar = ({
   title,
@@ -13,25 +17,25 @@ const HeaderToolbar = ({
 }) => {
   return (
     <SafeAreaView style={{backgroundColor: '#56b484', zIndex: 1}}>
-      <View
-        style={styles.containerLeftSide(
-          onPressBack,
-          leftTitle,
-          titleButtonRight,
-        )}>
-        {onPressBack && (
-          <TouchableOpacity onPress={onPressBack}>
-            <ArrowBackIcon style={styles.containerArrowButtonBack} />
-          </TouchableOpacity>
-        )}
+        <View
+          style={styles.containerLeftSide(
+            onPressBack,
+            leftTitle,
+            titleButtonRight,
+          )}>
+          {onPressBack && (
+            <TouchableOpacity onPress={onPressBack}>
+              <ArrowBackIcon style={styles.containerArrowButtonBack} />
+            </TouchableOpacity>
+          )}
 
-        <Text style={styles.containerTextTitle}>{title}</Text>
-        {onPressButtonRight && (
-          <TouchableOpacity onPress={onPressButtonRight}>
-            <Text style={styles.buttonRight}>{titleButtonRight}</Text>
-          </TouchableOpacity>
-        )}
-      </View>
+          <Text style={styles.containerTextTitle}>{title}</Text>
+          {onPressButtonRight && (
+            <TouchableOpacity onPress={onPressButtonRight}>
+              <Text style={styles.buttonRight}>{titleButtonRight}</Text>
+            </TouchableOpacity>
+          )}
+        </View>
     </SafeAreaView>
   );
 };
