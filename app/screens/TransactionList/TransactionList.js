@@ -1,10 +1,17 @@
 import {NativeBaseProvider} from 'native-base';
-import React, {useEffect, useState} from 'react';
-import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Modal,
+} from 'react-native';
 import CardItemTransactionList from '../../components/molecules/CardItemTransactionList';
 import HeaderToolbar from '../../components/molecules/HeaderToolbar';
 import SearchField from '../../components/molecules/SearchField';
-import { useDebouncedEffect } from '../../components/utils/common';
+import {useDebouncedEffect} from '../../components/utils/common';
 import {getTransactionList} from '../../components/utils/network/transaction';
 
 const TransactionList = ({navigation}) => {
@@ -13,6 +20,7 @@ const TransactionList = ({navigation}) => {
   const [filteredData, setFilteredData] = useState([]);
   const [isRefreshData, setIsRefreshData] = useState(false);
   const [valueSearch, setValueSearch] = useState('');
+  const [isOpenModalize, setIsOpenModalize] = useState(false);
 
   useEffect(() => {
     getData();
@@ -35,7 +43,7 @@ const TransactionList = ({navigation}) => {
       let response = await getTransactionList();
       if (response) {
         setDataTransactionObj(response);
-        let asArray = Object.keys(response).map((key) => response[key]);
+        let asArray = Object.keys(response).map(key => response[key]);
         setDataTransactionArr(asArray);
       }
     } catch (error) {
@@ -44,7 +52,7 @@ const TransactionList = ({navigation}) => {
   };
 
   const renderData = ({item}) => {
-    console.log("item", item);
+    console.log('item', item);
     // dataTransaction[item].fee = 150000;
     return (
       <CardItemTransactionList
@@ -66,43 +74,75 @@ const TransactionList = ({navigation}) => {
 
   useDebouncedEffect(
     () => {
-      console.log(" useDebouncedEffect valueSearch", valueSearch); // debounced 1sec
+      console.log(' useDebouncedEffect valueSearch', valueSearch); // debounced 1sec
       onSearch(valueSearch);
     },
     1000,
-    [valueSearch]
+    [valueSearch],
   );
 
-  const onSearch = (text) => {
+  const onSearch = text => {
     let textLowerCase = text.toLowerCase();
-    console.log("text",textLowerCase);
-    let filtered = dataTransactionArr.filter((value,key)=>  (value.beneficiary_name.toLowerCase().includes(textLowerCase) == true || value.sender_bank.toLowerCase().includes(textLowerCase) == true || value.beneficiary_bank.toLowerCase().includes(textLowerCase) == true || value.fee.toString().includes(textLowerCase) == true));
-    console.log("filtered", filtered);
+    console.log('text', textLowerCase);
+    let filtered = dataTransactionArr.filter(
+      (value, key) =>
+        value.beneficiary_name.toLowerCase().includes(textLowerCase) == true ||
+        value.sender_bank.toLowerCase().includes(textLowerCase) == true ||
+        value.beneficiary_bank.toLowerCase().includes(textLowerCase) == true ||
+        value.fee.toString().includes(textLowerCase) == true,
+    );
+    console.log('filtered', filtered);
     setFilteredData(filtered);
-  }
+  };
 
   const changeValueSearch = text => {
     setValueSearch(text);
   };
 
-
   const renderSearchContainer = () => {
     return (
       <View>
-        <SearchField onChangeText={text => changeValueSearch(text)} placeholder={"Cari nama, bank, atau nominal"}/>
+        <SearchField
+          onChangeText={text => changeValueSearch(text)}
+          placeholder={'Cari nama, bank, atau nominal'}
+          onPressSortButton={() => onOpenModalize()}
+        />
       </View>
+    );
+  };
+
+  const onOpenModalize = () => {
+    setIsOpenModalize(true);
+  };
+
+  const renderBottomSheet = () => {
+    return (
+      <Modal
+        animationType="fade"
+        visible={isOpenModalize}
+        transparent={true}
+        onRequestClose={() => setIsOpenModalize(false)}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <TouchableOpacity onPress={() => setIsOpenModalize(false)}>
+              <Text>close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     );
   };
 
   return (
     <NativeBaseProvider>
+      {renderBottomSheet()}
       <HeaderToolbar title={'Transaction List'} />
       <View style={styles.mainContainer}>
         {renderSearchContainer()}
         <FlatList
           onRefresh={onRefresh}
           style={styles.flatlistStyleContainer}
-          data={valueSearch != "" ? filteredData : dataTransactionArr}
+          data={valueSearch != '' ? filteredData : dataTransactionArr}
           renderItem={renderData}
           refreshing={false}
         />
@@ -123,5 +163,26 @@ const styles = StyleSheet.create({
     backgroundColor: '#f4faf8',
     flex: 1,
     paddingBottom: 20,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 16,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
 });

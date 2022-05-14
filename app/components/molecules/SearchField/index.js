@@ -11,7 +11,8 @@ import {
 } from 'react-native';
 const SearchField = ({
     onChangeText,
-    placeholder
+    placeholder, 
+    onPressSortButton,
 }) => {
   return (
     <View style={styles.mainContainer}>
@@ -20,8 +21,8 @@ const SearchField = ({
         style={styles.iconSearchStyle}
       />
       <TextInput style={styles.textInput} onChangeText={(text) => onChangeText(text)} placeholder={placeholder}/>
-      <TouchableOpacity style={styles.containerSort}>
-        <Text style={styles.textSort}>URUTKAN V</Text>
+      <TouchableOpacity style={styles.containerSort} onPress={onPressSortButton}>
+        <Text style={styles.textSort}>URUTKAN </Text><Text style={styles.textSortV}> V</Text>
       </TouchableOpacity>
     </View>
   );
@@ -42,7 +43,15 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     lineHeight: 24,
     letterSpacing: 0.15,
-    marginHorizontal: 6,
+    marginLeft: 6,
+  },
+  textSortV: {
+    color: '#000000',
+    fontSize: 14,
+    fontWeight: '600',
+    lineHeight: 24,
+    letterSpacing: 0.15,
+    marginRight: 6,
   },
   mainContainer: {
     margin: 10,
