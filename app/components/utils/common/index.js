@@ -1,3 +1,5 @@
+import React, { useEffect, useRef } from "react";
+
 export const formatDate = date => {
   let temp = date.split(' ')[0].split('-').reverse(),
     newFormat;
@@ -45,3 +47,22 @@ export const formatRupiah = (fee, prefix) => {
   rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
   return prefix == undefined ? rupiah : rupiah ? 'Rp ' + rupiah : '';
 };
+
+
+export const useDebouncedEffect = (callback, delay, deps = []) => {
+  const firstUpdate = useRef(true);
+  useEffect(() => {
+    if (firstUpdate.current) {
+      firstUpdate.current = false;
+      return;
+    }
+    const handler = setTimeout(() => {
+      callback();
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [delay, ...deps]);
+}
+

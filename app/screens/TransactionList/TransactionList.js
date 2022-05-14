@@ -3,11 +3,16 @@ import React, {useEffect, useState} from 'react';
 import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import CardItemTransactionList from '../../components/molecules/CardItemTransactionList';
 import HeaderToolbar from '../../components/molecules/HeaderToolbar';
+import SearchField from '../../components/molecules/SearchField';
+import { useDebouncedEffect } from '../../components/utils/common';
 import {getTransactionList} from '../../components/utils/network/transaction';
 
 const TransactionList = ({navigation}) => {
-  const [dataTransaction, setDataTransaction] = useState({});
+  const [dataTransactionObj, setDataTransactionObj] = useState({});
+  const [dataTransactionArr, setDataTransactionArr] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
   const [isRefreshData, setIsRefreshData] = useState(false);
+  const [valueSearch, setValueSearch] = useState('');
 
   useEffect(() => {
     getData();
@@ -21,7 +26,7 @@ const TransactionList = ({navigation}) => {
   }, [isRefreshData]);
 
   const onRefresh = () => {
-    setDataTransaction({});
+    setDataTransactionObj({});
     setIsRefreshData(true);
   };
 
@@ -29,45 +34,63 @@ const TransactionList = ({navigation}) => {
     try {
       let response = await getTransactionList();
       if (response) {
-        console.log('response', response);
-        setDataTransaction(response);
+        setDataTransactionObj(response);
+        let asArray = Object.keys(response).map((key) => response[key]);
+        setDataTransactionArr(asArray);
       }
-      // console.log('response', response);
     } catch (error) {
       console.log('Error getTransactionList', error);
     }
   };
 
-  const renderSampleData = () => {
-    return (
-      <View>
-        {Object.entries(dataTransaction).map(([key, value]) => {
-          return (
-            <View key={key}>
-              <Text> {value.status.toString()}</Text>
-            </View>
-          );
-        })}
-      </View>
-    );
-  };
-
-  const renderData = item => {
+  const renderData = ({item}) => {
+    console.log("item", item);
+    // dataTransaction[item].fee = 150000;
     return (
       <CardItemTransactionList
         onPress={() =>
           navigation.navigate('DetailTransaction', {
-            data: dataTransaction[item],
+            data: item,
           })
         }
-        senderBank={dataTransaction[item].sender_bank}
-        beneficiaryBank={dataTransaction[item].beneficiary_bank}
-        beneficiaryName={dataTransaction[item].beneficiary_name}
-        statusTransaction={dataTransaction[item].status}
-        fee={dataTransaction[item].fee}
-        completeAt={dataTransaction[item].completed_at}
-        createdAt={dataTransaction[item].created_at}
+        senderBank={item.sender_bank}
+        beneficiaryBank={item.beneficiary_bank}
+        beneficiaryName={item.beneficiary_name}
+        statusTransaction={item.status}
+        fee={item.fee}
+        completeAt={item.completed_at}
+        createdAt={item.created_at}
       />
+    );
+  };
+
+  useDebouncedEffect(
+    () => {
+      console.log(" useDebouncedEffect valueSearch", valueSearch); // debounced 1sec
+      onSearch(valueSearch);
+    },
+    1000,
+    [valueSearch]
+  );
+
+  const onSearch = (text) => {
+    let textLowerCase = text.toLowerCase();
+    console.log("text",textLowerCase);
+    let filtered = dataTransactionArr.filter((value,key)=>  (value.beneficiary_name.toLowerCase().includes(textLowerCase) == true || value.sender_bank.includes(textLowerCase) == true || value.beneficiary_bank.includes(textLowerCase) == true || value.fee.toString().includes(textLowerCase) == true));
+    console.log("filtered", filtered);
+    setFilteredData(filtered);
+  }
+
+  const changeValueSearch = text => {
+    setValueSearch(text);
+  };
+
+
+  const renderSearchContainer = () => {
+    return (
+      <View>
+        <SearchField onChangeText={text => changeValueSearch(text)} placeholder={"Cari nama, bank, atau nominal"}/>
+      </View>
     );
   };
 
@@ -75,11 +98,12 @@ const TransactionList = ({navigation}) => {
     <NativeBaseProvider>
       <HeaderToolbar title={'Transaction List'} />
       <View style={styles.mainContainer}>
+        {renderSearchContainer()}
         <FlatList
           onRefresh={onRefresh}
           style={styles.flatlistStyleContainer}
-          data={Object.keys(dataTransaction)}
-          renderItem={({item}) => renderData(item)}
+          data={valueSearch != "" ? filteredData : dataTransactionArr}
+          renderItem={renderData}
           refreshing={false}
         />
       </View>
