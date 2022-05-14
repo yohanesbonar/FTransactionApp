@@ -76,7 +76,7 @@ const TransactionList = ({navigation}) => {
   const onSearch = (text) => {
     let textLowerCase = text.toLowerCase();
     console.log("text",textLowerCase);
-    let filtered = dataTransactionArr.filter((value,key)=>  (value.beneficiary_name.toLowerCase().includes(textLowerCase) == true || value.sender_bank.includes(textLowerCase) == true || value.beneficiary_bank.includes(textLowerCase) == true || value.fee.toString().includes(textLowerCase) == true));
+    let filtered = dataTransactionArr.filter((value,key)=>  (value.beneficiary_name.toLowerCase().includes(textLowerCase) == true || value.sender_bank.toLowerCase().includes(textLowerCase) == true || value.beneficiary_bank.toLowerCase().includes(textLowerCase) == true || value.fee.toString().includes(textLowerCase) == true));
     console.log("filtered", filtered);
     setFilteredData(filtered);
   }
