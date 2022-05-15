@@ -96,7 +96,15 @@ const TransactionList = ({navigation}) => {
         value.beneficiary_bank.toLowerCase().includes(textLowerCase) == true ||
         value.fee.toString().includes(textLowerCase) == true,
     );
-    setFilteredData(filtered);
+    if (text != '') {
+      setFilteredData(filtered);
+    } else {
+      if (optionSortValue != 'default') {
+        checkOptionSortValue(optionSortValue);
+      } else {
+        setFilteredData(dataTransactionArr);
+      }
+    }
   };
 
   const changeValueSearch = text => {
@@ -135,13 +143,13 @@ const TransactionList = ({navigation}) => {
     setOptionSortValue(value);
 
     if (value == 'ascending') {
-      setFilteredData(ascendingSortName(filteredData));
+      setFilteredData(ascendingSortName(valueSearch != '' ? filteredData : dataTransactionArr));
     } else if (value == 'descending') {
-      setFilteredData(descendingSortName(filteredData));
+      setFilteredData(descendingSortName(valueSearch != '' ? filteredData : dataTransactionArr));
     } else if (value == 'latestDate') {
-      setFilteredData(dateSort('latest', filteredData));
+      setFilteredData(dateSort('latest', valueSearch != '' ? filteredData : dataTransactionArr));
     } else if (value == 'oldestDate') {
-      setFilteredData(dateSort('oldest', filteredData));
+      setFilteredData(dateSort('oldest', valueSearch != '' ? filteredData : dataTransactionArr));
     } else {
       setFilteredData(valueSearch != '' ? filteredData : dataTransactionArr);
     }
