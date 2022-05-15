@@ -10,10 +10,10 @@ import {
   TouchableOpacity,
 } from 'react-native';
 const SearchField = ({
-    onChangeText,
-    placeholder, 
-    onPressSortButton,
-    valueSort,
+  onChangeText,
+  placeholder,
+  onPressSortButton,
+  valueSort,
 }) => {
   return (
     <View style={styles.mainContainer}>
@@ -21,9 +21,16 @@ const SearchField = ({
         source={require('../../../assets/images/ic-search.png')}
         style={styles.iconSearchStyle}
       />
-      <TextInput style={styles.textInput} onChangeText={(text) => onChangeText(text)} placeholder={placeholder}/>
-      <TouchableOpacity style={styles.containerSort} onPress={onPressSortButton}>
-        <Text style={styles.textSort}>{valueSort} </Text><Text style={styles.textSortV}> V</Text>
+      <TextInput
+        style={styles.textInput}
+        onChangeText={text => onChangeText(text)}
+        placeholder={placeholder}
+      />
+      <TouchableOpacity
+        style={styles.containerSort}
+        onPress={onPressSortButton}>
+        <Text style={styles.textSort}>{valueSort} </Text>
+        <Text style={styles.textSortV}> V</Text>
       </TouchableOpacity>
     </View>
   );
@@ -47,7 +54,7 @@ const styles = StyleSheet.create({
     marginLeft: 6,
   },
   textSortV: {
-    color: '#000000',
+    color: '#fb8f86',
     fontSize: 14,
     fontWeight: '600',
     lineHeight: 24,
@@ -67,7 +74,7 @@ const styles = StyleSheet.create({
     letterSpacing: 0.15,
     color: '#000000',
     flex: 1,
-    marginTop: -5
+    marginTop: -5,
   },
   containerSort: {flexDirection: 'row'},
 });
