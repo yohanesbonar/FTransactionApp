@@ -1,17 +1,16 @@
 import {NativeBaseProvider} from 'native-base';
 import React, {useEffect, useRef, useState} from 'react';
-import {
-  FlatList,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  Modal,
-} from 'react-native';
+import {FlatList, StyleSheet, View, Modal} from 'react-native';
+import OptionRadioButton from '../../components/atoms/optionRadioButton';
 import CardItemTransactionList from '../../components/molecules/CardItemTransactionList';
 import HeaderToolbar from '../../components/molecules/HeaderToolbar';
 import SearchField from '../../components/molecules/SearchField';
-import {useDebouncedEffect} from '../../components/utils/common';
+import {
+  ascendingSortName,
+  dateSort,
+  descendingSortName,
+  useDebouncedEffect,
+} from '../../components/utils/common';
 import {getTransactionList} from '../../components/utils/network/transaction';
 
 const TransactionList = ({navigation}) => {
@@ -21,6 +20,7 @@ const TransactionList = ({navigation}) => {
   const [isRefreshData, setIsRefreshData] = useState(false);
   const [valueSearch, setValueSearch] = useState('');
   const [isOpenModalize, setIsOpenModalize] = useState(false);
+  const [optionSortValue, setOptionSortValue] = useState('default');
 
   useEffect(() => {
     getData();
@@ -45,6 +45,7 @@ const TransactionList = ({navigation}) => {
         setDataTransactionObj(response);
         let asArray = Object.keys(response).map(key => response[key]);
         setDataTransactionArr(asArray);
+        setFilteredData(asArray);
       }
     } catch (error) {
       console.log('Error getTransactionList', error);
@@ -52,7 +53,7 @@ const TransactionList = ({navigation}) => {
   };
 
   const renderData = ({item}) => {
-    console.log('item', item);
+    // console.log('item', item);
     // dataTransaction[item].fee = 150000;
     return (
       <CardItemTransactionList
@@ -84,7 +85,13 @@ const TransactionList = ({navigation}) => {
   const onSearch = text => {
     let textLowerCase = text.toLowerCase();
     console.log('text', textLowerCase);
-    let filtered = dataTransactionArr.filter(
+    let data;
+    if (optionSortValue != 'default') {
+      data = filteredData;
+    } else {
+      data = dataTransactionArr;
+    }
+    let filtered = data.filter(
       (value, key) =>
         value.beneficiary_name.toLowerCase().includes(textLowerCase) == true ||
         value.sender_bank.toLowerCase().includes(textLowerCase) == true ||
@@ -100,12 +107,23 @@ const TransactionList = ({navigation}) => {
   };
 
   const renderSearchContainer = () => {
+    let valueSort =
+      optionSortValue == 'default'
+        ? 'URUTKAN'
+        : optionSortValue == 'ascending'
+        ? 'Nama A-Z'
+        : optionSortValue == 'descending'
+        ? 'Nama Z-A'
+        : optionSortValue == 'latestDate'
+        ? 'Tanggal Terbaru'
+        : 'Tanggal Terlama';
     return (
       <View>
         <SearchField
           onChangeText={text => changeValueSearch(text)}
           placeholder={'Cari nama, bank, atau nominal'}
           onPressSortButton={() => onOpenModalize()}
+          valueSort={valueSort}
         />
       </View>
     );
@@ -113,6 +131,23 @@ const TransactionList = ({navigation}) => {
 
   const onOpenModalize = () => {
     setIsOpenModalize(true);
+  };
+
+  const checkOptionSortValue = value => {
+    setIsOpenModalize(false);
+    setOptionSortValue(value);
+
+    if (value == 'ascending') {
+      setFilteredData(ascendingSortName(filteredData));
+    } else if (value == 'descending') {
+      setFilteredData(descendingSortName(filteredData));
+    } else if (value == 'latestDate') {
+      setFilteredData(dateSort('latest', filteredData));
+    } else if (value == 'oldestDate') {
+      setFilteredData(dateSort('oldest', filteredData));
+    } else {
+      setFilteredData(valueSearch != '' ? filteredData : dataTransactionArr);
+    }
   };
 
   const renderBottomSheet = () => {
@@ -124,9 +159,31 @@ const TransactionList = ({navigation}) => {
         onRequestClose={() => setIsOpenModalize(false)}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <TouchableOpacity onPress={() => setIsOpenModalize(false)}>
-              <Text>close</Text>
-            </TouchableOpacity>
+            <OptionRadioButton
+              onPress={() => checkOptionSortValue('default')}
+              categoryName={'URUTKAN'}
+              selected={optionSortValue == 'default' ? true : false}
+            />
+            <OptionRadioButton
+              onPress={() => checkOptionSortValue('ascending')}
+              categoryName={'Nama A-Z'}
+              selected={optionSortValue == 'ascending' ? true : false}
+            />
+            <OptionRadioButton
+              onPress={() => checkOptionSortValue('descending')}
+              categoryName={'Nama Z-A'}
+              selected={optionSortValue == 'descending' ? true : false}
+            />
+            <OptionRadioButton
+              onPress={() => checkOptionSortValue('latestDate')}
+              categoryName={'Tanggal Terbaru'}
+              selected={optionSortValue == 'latestDate' ? true : false}
+            />
+            <OptionRadioButton
+              onPress={() => checkOptionSortValue('oldestDate')}
+              categoryName={'Tanggal Terlama'}
+              selected={optionSortValue == 'oldestDate' ? true : false}
+            />
           </View>
         </View>
       </Modal>
@@ -142,7 +199,7 @@ const TransactionList = ({navigation}) => {
         <FlatList
           onRefresh={onRefresh}
           style={styles.flatlistStyleContainer}
-          data={valueSearch != '' ? filteredData : dataTransactionArr}
+          data={filteredData}
           renderItem={renderData}
           refreshing={false}
         />
@@ -169,13 +226,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 22,
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
   modalView: {
-    margin: 20,
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 16,
-    alignItems: 'center',
+    paddingVertical: 16,
+    paddingLeft: 10,
+    paddingRight: 18,
+    alignItems: 'flex-start',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -184,5 +243,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+    flexDirection: 'column',
   },
 });

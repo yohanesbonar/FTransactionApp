@@ -13,6 +13,7 @@ const SearchField = ({
     onChangeText,
     placeholder, 
     onPressSortButton,
+    valueSort,
 }) => {
   return (
     <View style={styles.mainContainer}>
@@ -22,7 +23,7 @@ const SearchField = ({
       />
       <TextInput style={styles.textInput} onChangeText={(text) => onChangeText(text)} placeholder={placeholder}/>
       <TouchableOpacity style={styles.containerSort} onPress={onPressSortButton}>
-        <Text style={styles.textSort}>URUTKAN </Text><Text style={styles.textSortV}> V</Text>
+        <Text style={styles.textSort}>{valueSort} </Text><Text style={styles.textSortV}> V</Text>
       </TouchableOpacity>
     </View>
   );
