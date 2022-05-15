@@ -16,7 +16,7 @@ const OptionRadioButton = ({onPress, categoryName, selected}) => {
         style={[
           styles.circleRadioButton,
           {
-            borderColor: selected ? '#D01E53' : '#454F63',
+            borderColor: selected ? '#fb6337' : '#fb6337',
           },
         ]}>
         {selected ? (
@@ -24,7 +24,7 @@ const OptionRadioButton = ({onPress, categoryName, selected}) => {
             style={[
               styles.circleSelected,
               {
-                backgroundColor: '#D01E53',
+                backgroundColor: '#fb6337',
               },
             ]}
           />
@@ -75,6 +75,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 24,
     letterSpacing: 0.15,
-    color: "#000000"
+    color: '#000000',
   },
 });

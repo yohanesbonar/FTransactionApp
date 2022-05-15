@@ -28,6 +28,8 @@ const TransactionList = ({navigation}) => {
 
   useEffect(() => {
     if (isRefreshData) {
+      setValueSearch('');
+      setOptionSortValue('default');
       setIsRefreshData(false);
       getData();
     }
@@ -142,13 +144,31 @@ const TransactionList = ({navigation}) => {
     setOptionSortValue(value);
 
     if (value == 'ascending') {
-      setFilteredData(ascendingSortName(valueSearch != '' ? filteredData : dataTransactionArr));
+      setFilteredData(
+        ascendingSortName(
+          valueSearch != '' ? filteredData : dataTransactionArr,
+        ),
+      );
     } else if (value == 'descending') {
-      setFilteredData(descendingSortName(valueSearch != '' ? filteredData : dataTransactionArr));
+      setFilteredData(
+        descendingSortName(
+          valueSearch != '' ? filteredData : dataTransactionArr,
+        ),
+      );
     } else if (value == 'latestDate') {
-      setFilteredData(dateSort('latest', valueSearch != '' ? filteredData : dataTransactionArr));
+      setFilteredData(
+        dateSort(
+          'latest',
+          valueSearch != '' ? filteredData : dataTransactionArr,
+        ),
+      );
     } else if (value == 'oldestDate') {
-      setFilteredData(dateSort('oldest', valueSearch != '' ? filteredData : dataTransactionArr));
+      setFilteredData(
+        dateSort(
+          'oldest',
+          valueSearch != '' ? filteredData : dataTransactionArr,
+        ),
+      );
     } else {
       setFilteredData(valueSearch != '' ? filteredData : dataTransactionArr);
     }
