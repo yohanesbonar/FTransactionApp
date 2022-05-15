@@ -53,7 +53,6 @@ const TransactionList = ({navigation}) => {
   };
 
   const renderData = ({item}) => {
-    // dataTransaction[item].fee = 150000;
     return (
       <CardItemTransactionList
         onPress={() =>
