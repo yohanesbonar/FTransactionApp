@@ -1,7 +1,7 @@
 import {NativeBaseProvider} from 'native-base';
 import React, {useEffect, useRef, useState} from 'react';
 import {FlatList, StyleSheet, View, Modal} from 'react-native';
-import OptionRadioButton from '../../components/atoms/optionRadioButton';
+import OptionRadioButton from '../../components/atoms/OptionRadioButton';
 import CardItemTransactionList from '../../components/molecules/CardItemTransactionList';
 import HeaderToolbar from '../../components/molecules/HeaderToolbar';
 import SearchField from '../../components/molecules/SearchField';
