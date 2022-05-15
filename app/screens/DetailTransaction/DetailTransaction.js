@@ -6,7 +6,6 @@ import {formatDate, formatRupiah} from '../../components/utils/common';
 import HeaderToolbar from './../../../app/components/molecules/HeaderToolbar';
 
 const DetailTransaction = ({route, navigation}) => {
-  console.log('params', route.params);
   let data = route.params.data ? route.params.data : {};
   const [isExpanded, setIsExpanded] = useState(false);
   const handleBackButton = () => {

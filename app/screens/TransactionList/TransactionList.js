@@ -53,7 +53,6 @@ const TransactionList = ({navigation}) => {
   };
 
   const renderData = ({item}) => {
-    // console.log('item', item);
     // dataTransaction[item].fee = 150000;
     return (
       <CardItemTransactionList
@@ -84,7 +83,6 @@ const TransactionList = ({navigation}) => {
 
   const onSearch = text => {
     let textLowerCase = text.toLowerCase();
-    console.log('text', textLowerCase);
     let data;
     if (optionSortValue != 'default') {
       data = filteredData;
@@ -98,7 +96,6 @@ const TransactionList = ({navigation}) => {
         value.beneficiary_bank.toLowerCase().includes(textLowerCase) == true ||
         value.fee.toString().includes(textLowerCase) == true,
     );
-    console.log('filtered', filtered);
     setFilteredData(filtered);
   };
 

@@ -78,7 +78,6 @@ export const ascendingSortName = filteredData => {
     }
     return 0;
   });
-  console.log('ascendingSort', tempFiltered);
   return tempFiltered;
 };
 
@@ -95,7 +94,6 @@ export const descendingSortName = filteredData => {
     }
     return 0;
   });
-  console.log('descendingSort', tempFiltered);
   return tempFiltered;
 };
 
@@ -110,13 +108,11 @@ export const dateSort = (type, data) => {
     tempdateB = tempdateB.split(' ')[0];
     tempdateB = new Date(tempdateB);
 
-    // console.log('new Date', new Date(a.created_at));
     if (type == 'latest') {
       return tempdateB.getTime() - tempdateA.getTime();
     } else {
       return tempdateA.getTime() - tempdateB.getTime();
     }
   });
-  console.log('latestDateSort', tempData);
   return tempData;
 };
